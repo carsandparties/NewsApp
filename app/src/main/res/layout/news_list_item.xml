@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Layout for a single list item that displays an article -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/ListWrapper"
+    android:background="@drawable/border" >
+
+    <!-- Section Name & Date/Time of the article -->
+    <LinearLayout
+        android:id="@+id/date_section_wrapper"
+        style="@style/SectionWrapper">
+
+        <!-- Name of Section -->
+        <TextView
+            android:id="@+id/name_section"
+            style="@style/StyleSection"
+            tools:text="Technology"/>
+
+        <!-- Time/date wrapper -->
+        <LinearLayout
+            android:id="@+id/time_date_wrapper"
+            style="@style/DateTimeWrapper">
+
+            <!-- Date -->
+            <TextView
+                android:id="@+id/date"
+                style="@style/ListDate"
+                tools:text="Nov 7, 2012" />
+
+            <!-- Time -->
+            <TextView
+                android:id="@+id/time"
+                style="@style/ListTime"
+                tools:text="2:50PM" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Title wrapper -->
+    <LinearLayout
+        android:id="@+id/title_wrapper"
+        style="@style/TitleWrapper">
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/title"
+            style="@style/ListTitle"
+            tools:text="Example title" />
+
+    </LinearLayout>
+
+    <!-- Author name -->
+    <TextView
+        android:id="@+id/author_name"
+        style="@style/ListAuthor"
+        tools:text="Jane Doe" />
+</LinearLayout>
