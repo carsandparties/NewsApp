@@ -19,13 +19,16 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.widget.TextView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class NewsActivity extends AppCompatActivity implements LoaderCallbacks<List<News>> {
+    @BindView(R.id.list) ListView newsListView;
+    @BindView(R.id.empty_view) TextView EmptyStateTextView;
+    @BindView(R.id.loading_indicator) View loadingIndicator;
 
     /* Adapter for the list of news stories */
     private NewsAdapter mAdapter;
-
-    /* TextView that's displayed when the list is empty */
-    private TextView mEmptyStateTextView;
 
     /* URL to query The Guardian's dataset for news article information */
     private static final String GUARDIAN_REQUEST_URL = "http://content.guardianapis.com/search?q=tensorflow&api-key=3bd58974-10b7-4bcb-830a-2c076bf926bd&show-tags=contributor";
@@ -39,8 +42,8 @@ public class NewsActivity extends AppCompatActivity implements LoaderCallbacks<L
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
 
-        // Find a reference to the {@link ListView} in the layout
-        ListView newsListView = (ListView) findViewById(R.id.list);
+        // Inject the Views using the ButterKnife library
+        ButterKnife.bind(this);
 
         // Create a new adapter that takes an empty list of News as input
         mAdapter = new NewsAdapter(this, new ArrayList<News>());
@@ -68,8 +71,7 @@ public class NewsActivity extends AppCompatActivity implements LoaderCallbacks<L
             }
         });
 
-        mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
-        newsListView.setEmptyView(mEmptyStateTextView);
+        newsListView.setEmptyView(EmptyStateTextView);
 
         // Get a reference to the ConnectivityManager to check the state of network connectivity
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -86,11 +88,10 @@ public class NewsActivity extends AppCompatActivity implements LoaderCallbacks<L
             loaderManager.initLoader(NEWS_LOADER_ID, null, this);
         } else {
             // Otherwise display an error message
-            View loadingIndicator = findViewById(R.id.loading_indicator);
             loadingIndicator.setVisibility(View.GONE);
 
             // Update empty state with no connection message
-            mEmptyStateTextView.setText(R.string.no_connection);
+            EmptyStateTextView.setText(R.string.no_connection);
         }
     }
 
@@ -103,11 +104,10 @@ public class NewsActivity extends AppCompatActivity implements LoaderCallbacks<L
     @Override
     public void onLoadFinished(Loader<List<News>> loader, List<News> stories) {
         // Hide the loading indicator once the data has been loaded
-        View loadingIndicator = findViewById(R.id.loading_indicator);
         loadingIndicator.setVisibility(View.GONE);
 
         // Set the empty state text to display "No news found"
-        mEmptyStateTextView.setText(R.string.no_news);
+        EmptyStateTextView.setText(R.string.no_news);
 
         // Clear the adapter of previous news data
         mAdapter.clear();

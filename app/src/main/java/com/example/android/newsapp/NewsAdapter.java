@@ -12,11 +12,17 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by elizabethsotomayor on 7/11/18.
  */
 
 public class NewsAdapter extends ArrayAdapter<News> {
+    @BindView(R.id.title) TextView titleView;
+    @BindView(R.id.name_section) TextView sectionView;
+    @BindView(R.id.author_name) TextView authorView;
 
     /**
      * Construct a new {@link NewsAdapter}.
@@ -38,21 +44,18 @@ public class NewsAdapter extends ArrayAdapter<News> {
         if (listItemView == null) {
             listItemView = LayoutInflater.from(getContext()).inflate(
                     R.layout.news_list_item, parent, false);
+            ButterKnife.bind(this, listItemView);
         }
 
         // Find the news article at the given position in the list of news articles.
         News currentNews = getItem(position);
 
-        // Find the TextView with ID title_text_view
-        TextView titleView = (TextView) listItemView.findViewById(R.id.title);
+        // Set titleView to current title
         titleView.setText(currentNews.getTitle());
 
-        // Find the TextView with ID section
-        TextView sectionView = (TextView) listItemView.findViewById(R.id.name_section);
+        // Set sectionView to current section
         sectionView.setText(currentNews.getSection());
 
-        // Find the TextView with view ID author
-        TextView authorView = (TextView) listItemView.findViewById(R.id.author_name);
         // Display author name of the current article in authorView
         if(currentNews.getAuthor() != "") {
             authorView.setText(currentNews.getAuthor());
