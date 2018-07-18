@@ -2,11 +2,15 @@ package com.example.android.newsapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -31,7 +35,7 @@ public class NewsActivity extends AppCompatActivity implements LoaderCallbacks<L
     private NewsAdapter mAdapter;
 
     /* URL to query The Guardian's dataset for news article information */
-    private static final String GUARDIAN_REQUEST_URL = "http://content.guardianapis.com/search?q=tensorflow&api-key=3bd58974-10b7-4bcb-830a-2c076bf926bd&show-tags=contributor";
+    private static final String GUARDIAN_REQUEST_URL = "https://content.guardianapis.com/search?&api-key=3bd58974-10b7-4bcb-830a-2c076bf926bd&show-tags=contributor";
 
     /* Constant value for the news loader ID */
     private static final int NEWS_LOADER_ID = 1;
@@ -97,8 +101,32 @@ public class NewsActivity extends AppCompatActivity implements LoaderCallbacks<L
 
     @Override
     public Loader<List<News>> onCreateLoader(int i, Bundle bundle) {
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        String search = sharedPreferences.getString(
+                getString(R.string.search_key_settings),
+                getString(R.string.settings_Search_default));
+
+        String orderBy = sharedPreferences.getString(
+                getString(R.string.order_by_key_settings),
+                getString(R.string.order_by_default_settings)
+        );
+
+        Uri baseUri = Uri.parse(GUARDIAN_REQUEST_URL);
+        Uri.Builder uriBuilder = baseUri.buildUpon();
+        if(!search.equals("")) {
+            uriBuilder.appendQueryParameter("q", search);
+            orderBy = getString(R.string.order_by_relevance_value_settings);
+        }
+        if (search.equals("") && orderBy.equals(getString(R.string.order_by_relevance_value_settings))) {
+            orderBy = getString(R.string.order_by_newest_value_settings);
+        }
+
+        uriBuilder.appendQueryParameter("order-by", orderBy);
+
         // Create a new loader for the URL
-        return new NewsLoader(this, GUARDIAN_REQUEST_URL);
+        return new NewsLoader(this, uriBuilder.toString());
     }
 
     @Override
@@ -123,5 +151,22 @@ public class NewsActivity extends AppCompatActivity implements LoaderCallbacks<L
     public void onLoaderReset(Loader<List<News>> loader) {
         // Loader reset to clear existing data
         mAdapter.clear();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.settings_action) {
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            startActivity(settingsIntent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

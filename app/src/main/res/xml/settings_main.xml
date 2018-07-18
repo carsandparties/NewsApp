@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/title_settings">
+
+    <EditTextPreference
+        android:defaultValue="@string/settings_Search_default"
+        android:inputType="textCapWords"
+        android:key="@string/search_key_settings"
+        android:selectAllOnFocus="true"
+        android:title="@string/search_label_settings" />
+
+    <ListPreference
+        android:defaultValue="@string/order_by_default_settings"
+        android:entries="@array/order_by_labels_settings"
+        android:entryValues="@array/order_by_values_settings"
+        android:key="@string/order_by_key_settings"
+        android:title="@string/order_by_label_settings" />
+
+</PreferenceScreen>
